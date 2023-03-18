@@ -1,5 +1,5 @@
 import dataclasses
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Optional, Self, Type
 
 
@@ -14,7 +14,7 @@ class Token:
         return self.type == other
 
 
-class TokenizerRule:
+class TokenizerRule(ABC):
     @classmethod
     @abstractmethod
     def tokenize(cls, code: str, current: int) -> Optional[Self]:
