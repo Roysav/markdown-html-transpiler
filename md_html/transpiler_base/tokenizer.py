@@ -1,4 +1,5 @@
 import dataclasses
+import re
 from abc import ABC, abstractmethod
 from typing import Optional, Self, Type
 
@@ -19,6 +20,18 @@ class TokenizerRule(ABC):
     @abstractmethod
     def tokenize(cls, code: str, current: int) -> Optional[Self]:
         ...
+
+
+class RegexRule(TokenizerRule):
+    @property
+    @abstractmethod
+    def match(self) -> str:
+        ...
+
+    @classmethod
+    def tokenize(cls, code: str, current: int) -> Optional[Self]:
+        if (match := re.match(cls.match, code, current)) is not None:
+            return Token(str(cls), current, match.end(), match.group())
 
 
 class Tokenizer(ABC):
