@@ -21,7 +21,7 @@ class TokenizerRule(ABC):
         ...
 
 
-class Tokenizer:
+class Tokenizer(ABC):
     @property
     @abstractmethod
     def rules(self) -> tuple[Type[TokenizerRule]]: ...
