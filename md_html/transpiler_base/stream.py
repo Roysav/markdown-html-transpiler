@@ -14,8 +14,8 @@ class EmptyStream(BaseException):
 class Stream(Generic[T]):
     _iterator: Iterator[T]
 
-    def __init__(self, iterable__: Iterable[T]):
-        self._iterator = iter(iterable__)
+    def __init__(self, iterator__: Iterator[T]):
+        self._iterator = iterator__
         self._current = EmptyStream
 
     def next(self) -> T:
