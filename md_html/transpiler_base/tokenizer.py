@@ -18,7 +18,7 @@ class Token:
 class TokenizerRule(ABC):
     @classmethod
     @abstractmethod
-    def tokenize(cls, code: str, current: int) -> Optional[Self]:
+    def tokenize(cls, code: str, current: int) -> Optional[Token]:
         ...
 
 
