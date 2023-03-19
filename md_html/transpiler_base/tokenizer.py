@@ -23,9 +23,7 @@ class TokenizerRule(ABC):
 
 
 class RegexRule(TokenizerRule):
-    @property
-    def name(self) -> str:
-        return str(type(self)).upper()
+    name: str
 
     @property
     @abstractmethod
@@ -36,6 +34,10 @@ class RegexRule(TokenizerRule):
     def tokenize(cls, code: str, current: int) -> Optional[Self]:
         if (match := re.match(cls.match, code[current:])) is not None:
             return Token(cls.name, current, match.end(), match.group())
+
+    def __init_subclass__(cls, **kwargs):
+        if not hasattr(cls, 'name'):
+            cls.name = cls.__name__.upper()
 
 
 class Tokenizer(ABC):
