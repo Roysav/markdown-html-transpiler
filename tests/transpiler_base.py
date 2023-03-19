@@ -1,4 +1,4 @@
-# tests/transpiler_base/test_individual_tokens.py
+# tests/transpiler_base/transpiler_base.py
 import unittest
 from md_html.transpiler_base import tokenizer
 
@@ -8,7 +8,7 @@ Testing for making individual token rules and tokenizing text correctly
 """
 
 
-class TestIntegerRegexRule(unittest.TestCase):
+class Test(unittest.TestCase):
     class INTEGER(tokenizer.RegexRule):
         match = r'[1-9]*[0-9]'
 
