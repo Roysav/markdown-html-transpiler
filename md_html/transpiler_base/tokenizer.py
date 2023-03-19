@@ -30,7 +30,7 @@ class RegexRule(TokenizerRule):
 
     @classmethod
     def tokenize(cls, code: str, current: int) -> Optional[Self]:
-        if (match := re.match(cls.match, code, current)) is not None:
+        if (match := re.match(cls.match, code[current:])) is not None:
             return Token(str(cls), current, match.end(), match.group())
 
 
