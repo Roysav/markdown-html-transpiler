@@ -24,12 +24,12 @@ class Bold(tokenizer.TokenizerRule):
 
     @classmethod
     def tokenize(cls, code: str, current: int) -> Optional[Token]:
-        if not code.startswith('**'):
+        if not code.startswith('**', current):
             return None
 
         token_type = OPEN_BOLD if cls.open else CLOSE_BOLD
         cls.open = not cls.open  # toggle cls.open
-        return Token(token_type, current, current + 2, '**')
+        return Token(token_type, current, current + 2, code[current:current + 2])
 
 
 class Underline(tokenizer.TokenizerRule):
@@ -37,12 +37,12 @@ class Underline(tokenizer.TokenizerRule):
 
     @classmethod
     def tokenize(cls, code: str, current: int) -> Optional[Token]:
-        if not code.startswith('__'):
+        if not code.startswith('__', current):
             return None
 
         token_type = OPEN_UNDERLINE if cls.open else CLOSE_UNDERLINE
         cls.open = not cls.open
-        return Token(token_type, current, current + 2, '__')
+        return Token(token_type, current, current + 2, code[current:current + 2])
 
 
 class Headline(tokenizer.RegexRule):

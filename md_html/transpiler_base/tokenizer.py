@@ -33,7 +33,7 @@ class RegexRule(TokenizerRule):
     @classmethod
     def tokenize(cls, code: str, current: int) -> Optional[Self]:
         if (match := re.match(cls.match, code[current:])) is not None:
-            return Token(cls.name, current, match.end(), match.group())
+            return Token(cls.name, current, current + match.end(), match.group())
 
     def __init_subclass__(cls, **kwargs):
         if not hasattr(cls, 'name'):
@@ -47,19 +47,29 @@ class Tokenizer(ABC):
 
     def __init__(self, code: str):
         self.code = code
-        self.current = 0
+        self.index = 0
+        self.current = next(self)
+
 
     def __bool__(self):
-        """
-        :return: true if there is more code to tokenize
-        """
-        return self.current < len(self.code)
+        return self.current is not None
 
-    def __next__(self):
-        if not self:
-            raise StopIteration
-
-        for cls in self.rules:
-            if token := cls.tokenize(self.code, self.current):
+    def peek(self) -> Optional[Token]:
+        for rule in self.rules:
+            if (token := rule.tokenize(self.code, self.index)) is not None:
                 return token
-        raise SyntaxError(f'Unexpected token at {self.current}')
+        raise ValueError(f'No rule matched the code at index {self.index}')
+
+
+    def __next__(self) -> Token:
+        if self.index >= len(self.code):
+            self.current = None
+            return None
+        next_ = self.peek()
+        self.index = next_.stop
+        self.current = next_
+        return next_
+
+
+    def __iter__(self):
+        return self
