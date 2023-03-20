@@ -11,7 +11,7 @@ from dominate import tags
 
 class Parser:
     """
-    document  :
+    document  : (headline | paragraph | NEWLINE)* EOF;
     headline  : HEADLINE text_line;
     paragraph : expr (NEWLINE expr)* NEWLINE | EOF;
     text_line : expr+ NEWLINE | EOF;
@@ -26,8 +26,23 @@ class Parser:
     def __bool__(self):
         return bool(self.tokens)
 
+    def document(self):
+        doc = dominate.document(title='Document')
+        with doc:
+            while self.tokens.current is not None:
+                if (headline := self.headline()) is not None:
+                    doc.add(headline)
+                elif (paragraph := self.paragraph()) is not None:
+                    doc.add(paragraph)
+                elif self.tokens.current.type == NEWLINE:
+                    next(self.tokens)
+                else:
+                    raise ValueError(f'Unexpected token: {self.tokens.current}')
+        return doc
+
+
     def headline(self):
-        if not self.tokens or self.tokens.current.type == HEADLINE:
+        if not self.tokens or self.tokens.current.type != HEADLINE:
             return None
         header = self.tokens.current
         next(self.tokens)

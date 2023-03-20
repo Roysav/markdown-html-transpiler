@@ -33,11 +33,12 @@ class TestParser(unittest.TestCase):
     def test_headline(self):
         text = 'hello world'
         code = f'# {text}'
+        p = parser.Parser(code)
         expected = tags.h1(tags.p(text))
-        actual = parser.Parser(code).headline()
+        actual = p.headline()
         expected_soup = BeautifulSoup(expected.render(), 'html.parser')
         actual_soup = BeautifulSoup(actual.render(), 'html.parser')
-        self.assertEqual(expected_soup.text, actual_soup.text)
+        self.assertEqual(expected_soup.text.strip(), actual_soup.text.strip())
         self.assertEqual(expected_soup.find().name, actual_soup.find().name)
 
     def test_paragraph(self):
