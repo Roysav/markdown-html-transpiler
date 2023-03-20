@@ -49,6 +49,19 @@ class TestTokenizer(unittest.TestCase):
             next(tokens)
         self.assertEqual(expected, actual)
 
+    def test_sequence_headline(self):
+        code = '# h'
+        expected = [
+            tokenizer.Token(tokenizer.HEADLINE, 0, 2, '# '),
+            tokenizer.Token(tokenizer.CONTENT, 2, 3, 'h')
+        ]
+        actual = []
+        tokens = tokenizer.Tokenizer(code)
+        while tokens.current is not None:
+            actual.append(tokens.current)
+            next(tokens)
+
+        self.assertEqual(expected, actual)
 
 if __name__ == '__main__':
     unittest.main()

@@ -42,7 +42,7 @@ class TestParser(unittest.TestCase):
 
     def test_paragraph(self):
         text = 'hello world'
-        expected = tags.p(tags.span(text))
+        expected = tags.p(tags.span(tags.span(text)))
         actual = parser.Parser(text).paragraph()
         expected_soup = BeautifulSoup(expected.render(), 'html.parser')
         actual_soup = BeautifulSoup(actual.render(), 'html.parser')

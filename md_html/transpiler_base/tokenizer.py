@@ -11,8 +11,6 @@ class Token:
     stop: int
     value: str
 
-    def __eq__(self, other: str) -> bool:
-        return self.type == other
 
 
 class TokenizerRule(ABC):

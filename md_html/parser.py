@@ -11,7 +11,9 @@ from dominate import tags
 
 class Parser:
     """
-    paragraph : text_line+ NEWLINE;
+    document  :
+    headline  : HEADLINE text_line;
+    paragraph : expr (NEWLINE expr)* NEWLINE | EOF;
     text_line : expr+ NEWLINE | EOF;
     expr      : bold | underline | content;
     bold      : OPEN_BOLD expr CLOSE_BOLD;
@@ -24,14 +26,28 @@ class Parser:
     def __bool__(self):
         return bool(self.tokens)
 
+    def headline(self):
+        if not self.tokens or self.tokens.current.type == HEADLINE:
+            return None
+        header = self.tokens.current
+        next(self.tokens)
+        headline_expr = self.text_line()
+        level = header.value.count('#')
+        tag = [tags.h1, tags.h2, tags.h3, tags.h4, tags.h5, tags.h6][level - 1]
+        return tag(headline_expr)
+
     def paragraph(self):
         if (line := self.text_line()) is None:
             return None
         lines = [line]
-        while (line := self.text_line()) is not None:
-            lines.append(line)
-            if self.tokens and self.tokens.current.type == NEWLINE:
-                next(self.tokens)
+        while self.tokens.current.type == NEWLINE:
+            next(self.tokens)
+            lines.append(self.text_line())
+
+
+        if self.tokens and self.tokens.current.type == NEWLINE:
+            next(self.tokens)
+
         return tags.p(*lines)
 
     def text_line(self):
